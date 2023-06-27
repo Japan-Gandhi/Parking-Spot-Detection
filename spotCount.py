@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import pickle
 
-# Saving Hieght and width
+# Saving Height and width
 height = 48
 width = 108
 
