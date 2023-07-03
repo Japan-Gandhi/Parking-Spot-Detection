@@ -3,94 +3,82 @@ import numpy as np
 import pandas as pd
 import pickle
 import os
+import tensorflow as tf
+import keras
+from keras.models import load_model
 
 # Saving Height and width
 height = 48
 width = 108
 
-# Parking Spot images naming index
-
-emptySpotCount = 1
-occupiedSpotCount = 1
-skipCounter = 1
-
-# Directory Path for dataset
-dirPath = "C:\D\College Stuff\Semester 4\Summer Internship\Parking-Spot-Detection\Resources"
-
-
+# Loading the spot list from the pickle file
 with open("Parking-Spot-Detection/parkingSpotList.p", "rb") as file:
     positionList = pickle.load(file)
 
+positionList.reverse()
+# Importing the input video file
 cap = cv.VideoCapture(
     "Parking-Spot-Detection/Resources/Car Park Stablized.mp4")
 
 
-def checkSpotAvailability(imgThreshhold):
+def checkSpotAvailability(imgFrame):
 
-    # Re-initiating the variables
-    global occupiedSpotCount, emptySpotCount, skipCounter
+    spotCounter = 0
+    emptyCounter = 0
 
     for pos in positionList:
+        spotCounter += 1
         xCord, yCord = pos
-        threshCrop = imgThreshhold[yCord:yCord+height+1, xCord: xCord+width+1]
-        nonZeroCount = cv.countNonZero(threshCrop)
-        # cv.putText(frame, str(nonZeroCount), (xCord+10, yCord+40),
-        #            cv.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 255), 1)
 
-        if nonZeroCount > 300:
+        singleSpot = imgFrame[yCord:yCord+height+1, xCord: xCord+width+1]
+        prediction = predictStatus(singleSpot)
 
-            # Controlling the size fo the dataset (empty spot = occupied spot)
-            if skipCounter % 4 == 0:
-                # Declaring the path name to the required directory
-                occupiedPath = os.path.join(dirPath, "occupied")
+        if prediction > 0.5:
+            cv.rectangle(frame, pos, (xCord+width,
+                         yCord+height), (0, 0, 255), 2)
+            cv.putText(frame, str("Occupied"), (xCord+10, yCord+40),
+                       cv.FONT_HERSHEY_COMPLEX, 0.7, (255, 255, 0), 1)
 
-                # Naming the file
-                occFileName = str(occupiedSpotCount) + ".jpg"
-
-                # Changing the Directory
-                os.chdir(occupiedPath)
-
-                # Saving the file
-                cv.imwrite(
-                    occFileName, frame[yCord:yCord + height + 1, xCord: xCord + width + 1])
-                occupiedSpotCount += 1
-                # cv.rectangle(frame, pos, (xCord+width, yCord+height), (0, 0, 255), 2)
-
-            skipCounter += 1
-            
         else:
-            # Declaring the path name to the required directory
-            emptyPath = os.path.join(dirPath, "empty")
-
-            # Naming the file
-            empFileName = str(emptySpotCount) + ".jpg"
-
-            # Changing the Directory
-            os.chdir(emptyPath)
-
-            # Saving the file
-            cv.imwrite(
-                empFileName, frame[yCord:yCord + height + 1, xCord: xCord + width + 1])
-            emptySpotCount += 1
-            # cv.rectangle(frame, pos, (xCord+width, yCord+height), (0,255,0), 2)
+            cv.rectangle(frame, pos, (xCord+width,
+                         yCord+height), (0, 255, 0), 2)
+            cv.putText(frame, str("Empty"), (xCord+10, yCord+40),
+                       cv.FONT_HERSHEY_COMPLEX, 0.7, (255, 255, 0), 1)
+            emptyCounter += 1
+        
+    cv.putText(frame, "Free Spots: {}/{}".format(emptyCounter, spotCounter), (30, 30),
+               cv.FONT_HERSHEY_COMPLEX, 1, (45, 25, 255), 2)
+    
 
 
+def predictStatus(image):
+
+    modelLocation = "C:\D\College Stuff\Semester 4\Summer Internship\Parking-Spot-Detection\models\parkingSpotClassifier.h5"
+    model = load_model(modelLocation)
+    
+    # print(image.shape)
+
+    imageResize = tf.image.resize(image, (49, 109))
+    prediction = model.predict(np.expand_dims(imageResize/255, 0))
+    predictionValue = prediction[0][0]
+    
+    return predictionValue
+
+
+# Driver Loop
 while True:
-
     ret, frame = cap.read()
-    # if cap.get(cv.CAP_PROP_POS_FRAMES,) == cap.get(cv.CAP_PROP_FRAME_COUNT):
-    #     cap.set(cv.CAP_PROP_POS_FRAMES, 0)
+    if cap.get(cv.CAP_PROP_POS_FRAMES,) == cap.get(cv.CAP_PROP_FRAME_COUNT):
+        cap.set(cv.CAP_PROP_POS_FRAMES, 0)
 
-    imgGray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-    imgBlur = cv.blur(imgGray, (3,3), 1)
-    imgThreshhold = cv.adaptiveThreshold(
-        imgBlur, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY_INV, 25, 24)
-
-    checkSpotAvailability(imgThreshhold)
+    checkSpotAvailability(frame)
 
     cv.imshow("Video Capture", frame)
-    if cv.waitKey(100) == 13:  # Enter Key
+    if cv.waitKey(10) == 13:  # Enter Key
         break
 
 
+# End (close all windows)
 cv.destroyAllWindows()
+
+

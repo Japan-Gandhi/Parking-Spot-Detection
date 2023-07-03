@@ -6,3 +6,6 @@ import os
 import keras
 import cv2 as cv
 
+img = cv.imread("occTest1.jpg")
+plt.imshow(img)
+plt.show()
