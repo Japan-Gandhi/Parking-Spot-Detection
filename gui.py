@@ -25,7 +25,7 @@ with open("Parking-Spot-Detection/parkingSpotList.p", "rb") as file:
 positionList.reverse()
 # Importing the input video file
 cap = cv.VideoCapture(
-    "Parking-Spot-Detection/Resources/Car Park Stablized.mp4")
+    "Parking-Spot-Detection/Resources/Car Park Stablized Final Scam.mp4")
 
 ret, frame = cap.read()
 flag = 0
@@ -66,12 +66,12 @@ def checkSpotAvailability(imgFrame):
                        cv.FONT_HERSHEY_COMPLEX, 0.7, (255, 255, 0), 1)
             emptyCounter += 1
 
-        progress["value"] += float((100/12))
+        progress["value"] += float((100/69))
         root.update_idletasks()
         
 
-        if spotCounter == 12:
-            break
+        # if spotCounter == 12:
+        #     break
 
     cv.putText(frame, "Free Spots: {}/{}".format(emptyCounter, spotCounter),
                (30, 30), cv.FONT_HERSHEY_COMPLEX, 1, (45, 25, 255), 2)
@@ -91,10 +91,7 @@ def checkSpotAvailability(imgFrame):
     flag = 0
     root.update_idletasks()
     time.sleep(3)
-
-    update_frame()
-
-    # cv.waitKey(5000)
+    updateFrame()
 
 
 def predictStatus(image):
@@ -111,7 +108,7 @@ def predictStatus(image):
     return predictionValue
 
 
-def update_frame():
+def updateFrame():
 
     global ret, frame
     global flag
@@ -134,7 +131,7 @@ def update_frame():
             video_label.grid(column=0, row=2, columnspan=2)
             video_label.image = img_tk
 
-            root.after(30, update_frame)
+            root.after(30, updateFrame)
 
 
 clrBeige = "#f5f5dc"
@@ -165,7 +162,7 @@ btn.grid(column=0, row=1, padx=20, pady=10)
 btn.config(font=("Lexend Deca", 15))
 
 
-update_frame()
+updateFrame()
 
 
 root.mainloop()
