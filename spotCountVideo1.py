@@ -56,4 +56,5 @@ with open("Parking-Spot-Detection/parkingSpotListVideo1.p", "wb") as file:
     pickle.dump(positionList, file)
 
 
+print(len(positionList))
 cv.destroyAllWindows()

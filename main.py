@@ -23,7 +23,7 @@ with open("Parking-Spot-Detection/parkingSpotList.p", "rb") as file:
 
 # Importing the input video file
 cap = cv.VideoCapture(
-    "Parking-Spot-Detection/Resources/Car Park Stablized Final Scam.mp4")
+    "Parking-Spot-Detection/Resources/Car Park Stablized.mp4")
 
 ret, frame = cap.read()
 flag = 0
@@ -62,7 +62,7 @@ def checkSpotAvailability(imgFrame):
 
         else:
             cv.rectangle(frame, pos, (xCord+width,
-                         yCord+height), (0, 255, 0), 2)
+                         yCord+height), (0, 255, 0), -1)
             spotNumber = str(spotCounter)
             cv.putText(frame, spotNumber, (xCord+40, yCord+30),
                        cv.FONT_HERSHEY_COMPLEX, 0.7, (0,255,255), 1)
@@ -98,7 +98,7 @@ def checkSpotAvailability(imgFrame):
 
 def predictStatus(image):
 
-    modelLocation = "Parking-Spot-Detection\models\parkingSpotClassifierV2.h5"
+    modelLocation = "Parking-Spot-Detection\models\parkingSpotClassifierV3.h5"
     model = load_model(modelLocation)
 
     # print(image.shape)

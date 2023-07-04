@@ -35,7 +35,7 @@ def mouseClickCallback(event, x, y, flags, param):
 
 while True:
 
-    image = cv.imread("F:\CCET\SEM 4\Summer interniship\Parking-Spot-Detection\Resources\input_image_V2.png")
+    image = cv.imread("Parking-Spot-Detection\Resources\input_image_V2.png")
 
     # Manual Calculation of Height and Width
     # cv.rectangle(image, (50, 142), (158, 192), (0, 0, 255), 1)
@@ -54,5 +54,5 @@ while True:
 with open("Parking-Spot-Detection/parkingSpotListVideo2.p", "wb") as file:
     pickle.dump(positionList, file)
 
-
+print(len(positionList))
 cv.destroyAllWindows()

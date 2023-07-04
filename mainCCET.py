@@ -56,7 +56,7 @@ def checkSpotAvailability(imgFrame):
         if prediction > 0.5:
             cv.rectangle(frame, pos, (xCord+width,
                          yCord+height), (0, 0, 255), 2)
-            cv.putText(frame, str("Occupied"), (xCord+10, yCord+40),
+            cv.putText(frame, str("Occupied"), (xCord+120, yCord+70),
                        cv.FONT_HERSHEY_COMPLEX, 0.7, (255, 255, 0), 1)
             pass
 
@@ -64,7 +64,7 @@ def checkSpotAvailability(imgFrame):
             cv.rectangle(frame, pos, (xCord+width,
                          yCord+height), (0, 255, 0), 2)
             spotNumber = str(spotCounter)
-            cv.putText(frame, spotNumber, (xCord+40, yCord+30),
+            cv.putText(frame, spotNumber, (xCord+120, yCord+70),
                        cv.FONT_HERSHEY_COMPLEX, 0.7, (0,255,255), 1)
 
             emptyCounter += 1
@@ -95,7 +95,7 @@ def checkSpotAvailability(imgFrame):
 
 def predictStatus(image):
 
-    modelLocation = "Parking-Spot-Detection\models\parkingSpotClassifierV2.h5"
+    modelLocation = "Parking-Spot-Detection\models\parkingSpotClassifierV3.h5"
     model = load_model(modelLocation)
 
     # print(image.shape)

@@ -5,8 +5,8 @@ import pickle
 import os
 
 # Saving Height and width
-height = 130
-width = 289
+height = 30
+width = 50
 
 # Parking Spot images naming index
 
@@ -15,14 +15,14 @@ occupiedSpotCount = 1
 skipCounter = 1
 
 # Directory Path for dataset
-dirPath = "F:\CCET\SEM 4\Summer interniship\Parking-Spot-Detection\dataset4"
+dirPath = "C:\D\College Stuff\Semester 4\Summer Internship\Parking-Spot-Detection\Resources\dataset4"
 
 
-with open("Parking-Spot-Detection/parkingSpotListVideo2.p", "rb") as file:
+with open("Parking-Spot-Detection\parkingSpotListVideo2.p", "rb") as file:
     positionList = pickle.load(file)
 
 cap = cv.VideoCapture(
-    "F:\CCET\SEM 4\Summer interniship\Parking-Spot-Detection\Resources\Video 2 - Busy Parking Lot.mp4")
+    "Parking-Spot-Detection\Resources\Video 2 - Busy Parking Lot.mp4")
 
 
 def checkSpotAvailability(imgThreshhold):
@@ -37,42 +37,44 @@ def checkSpotAvailability(imgThreshhold):
         # cv.putText(frame, str(nonZeroCount), (xCord+10, yCord+40),
         #            cv.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 255), 1)
 
-        if nonZeroCount > 300:
-
-            # Declaring the path name to the required directory
-            occupiedPath = os.path.join(dirPath, "occupied")
-
-            # Naming the file
-            occFileName = str(occupiedSpotCount) + ".jpg"
-
-            # Changing the Directory
-            os.chdir(occupiedPath)
-
-            # Saving the file
-            cv.imwrite(
-                occFileName, frame[yCord:yCord + height + 1, xCord: xCord + width + 1])
-            occupiedSpotCount += 1
-            # cv.rectangle(frame, pos, (xCord+width, yCord+height), (0, 0, 255), 2)
-
-            skipCounter += 1
-            
-        else:
-            # Controlling the size fo the dataset (empty spot = occupied spot)
-            if skipCounter % 4 == 0:
+        if nonZeroCount > 170:
+            if skipCounter % 73 == 0:
+        
                 # Declaring the path name to the required directory
-                emptyPath = os.path.join(dirPath, "empty")
+                occupiedPath = os.path.join(dirPath, "occupied")
 
                 # Naming the file
-                empFileName = str(emptySpotCount) + ".jpg"
+                occFileName = str(occupiedSpotCount) + ".jpg"
 
                 # Changing the Directory
-                os.chdir(emptyPath)
+                os.chdir(occupiedPath)
 
                 # Saving the file
                 cv.imwrite(
-                    empFileName, frame[yCord:yCord + height + 1, xCord: xCord + width + 1])
-            emptySpotCount += 1
-                # cv.rectangle(frame, pos, (xCord+width, yCord+height), (0,255,0), 2)
+                    occFileName, frame[yCord:yCord + height + 1, xCord: xCord + width + 1])
+                occupiedSpotCount += 1
+                # cv.rectangle(frame, pos, (xCord+width, yCord+height), (0, 0, 255), 2)
+
+            skipCounter += 1
+
+        else:
+            # Controlling the size fo the dataset (empty spot = occupied spot)
+            # if skipCounter % 4 == 0:
+            #     # Declaring the path name to the required directory
+            #     emptyPath = os.path.join(dirPath, "empty")
+
+            #     # Naming the file
+            #     empFileName = str(emptySpotCount) + ".jpg"
+
+            #     # Changing the Directory
+            #     os.chdir(emptyPath)
+
+            #     # Saving the file
+            #     cv.imwrite(
+            #         empFileName, frame[yCord:yCord + height + 1, xCord: xCord + width + 1])
+            # emptySpotCount += 1
+            # cv.rectangle(frame, pos, (xCord+width, yCord+height), (0,255,0), 2)
+            pass
 
 
 while True:
@@ -82,14 +84,14 @@ while True:
     #     cap.set(cv.CAP_PROP_POS_FRAMES, 0)
 
     imgGray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-    imgBlur = cv.blur(imgGray, (3,3), 1)
+    imgBlur = cv.blur(imgGray, (3, 3), 1)
     imgThreshhold = cv.adaptiveThreshold(
         imgBlur, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY_INV, 25, 24)
 
     checkSpotAvailability(imgThreshhold)
 
     cv.imshow("Video Capture", frame)
-    if cv.waitKey(100) == 13:  # Enter Key
+    if cv.waitKey(130) == 13:  # Enter Key
         break
 
 
