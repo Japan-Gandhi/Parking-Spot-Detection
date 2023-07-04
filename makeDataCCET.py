@@ -5,8 +5,8 @@ import pickle
 import os
 
 # Saving Height and width
-height = 48
-width = 108
+height = 130
+width = 289
 
 # Parking Spot images naming index
 
@@ -15,14 +15,14 @@ occupiedSpotCount = 1
 skipCounter = 1
 
 # Directory Path for dataset
-dirPath = "C:\D\College Stuff\Semester 4\Summer Internship\Parking-Spot-Detection\Resources"
+dirPath = "C:\D\College Stuff\Semester 4\Summer Internship\Parking-Spot-Detection\Resources\dataset2"
 
 
-with open("Parking-Spot-Detection/parkingSpotList.p", "rb") as file:
+with open("Parking-Spot-Detection/parkingSpotListCCET.p", "rb") as file:
     positionList = pickle.load(file)
 
 cap = cv.VideoCapture(
-    "Parking-Spot-Detection/Resources/Car Park Stablized.mp4")
+    "Parking-Spot-Detection/Resources/02.mp4")
 
 
 def checkSpotAvailability(imgThreshhold):
@@ -39,40 +39,40 @@ def checkSpotAvailability(imgThreshhold):
 
         if nonZeroCount > 300:
 
-            # Controlling the size fo the dataset (empty spot = occupied spot)
-            if skipCounter % 4 == 0:
-                # Declaring the path name to the required directory
-                occupiedPath = os.path.join(dirPath, "occupied")
+            # Declaring the path name to the required directory
+            occupiedPath = os.path.join(dirPath, "occupied")
 
-                # Naming the file
-                occFileName = str(occupiedSpotCount) + ".jpg"
+            # Naming the file
+            occFileName = str(occupiedSpotCount) + ".jpg"
 
-                # Changing the Directory
-                os.chdir(occupiedPath)
+            # Changing the Directory
+            os.chdir(occupiedPath)
 
-                # Saving the file
-                cv.imwrite(
-                    occFileName, frame[yCord:yCord + height + 1, xCord: xCord + width + 1])
-                occupiedSpotCount += 1
-                # cv.rectangle(frame, pos, (xCord+width, yCord+height), (0, 0, 255), 2)
+            # Saving the file
+            cv.imwrite(
+                occFileName, frame[yCord:yCord + height + 1, xCord: xCord + width + 1])
+            occupiedSpotCount += 1
+            # cv.rectangle(frame, pos, (xCord+width, yCord+height), (0, 0, 255), 2)
 
             skipCounter += 1
             
         else:
-            # Declaring the path name to the required directory
-            emptyPath = os.path.join(dirPath, "empty")
+            # Controlling the size fo the dataset (empty spot = occupied spot)
+            if skipCounter % 4 == 0:
+                # Declaring the path name to the required directory
+                emptyPath = os.path.join(dirPath, "empty")
 
-            # Naming the file
-            empFileName = str(emptySpotCount) + ".jpg"
+                # Naming the file
+                empFileName = str(emptySpotCount) + ".jpg"
 
-            # Changing the Directory
-            os.chdir(emptyPath)
+                # Changing the Directory
+                os.chdir(emptyPath)
 
-            # Saving the file
-            cv.imwrite(
-                empFileName, frame[yCord:yCord + height + 1, xCord: xCord + width + 1])
+                # Saving the file
+                cv.imwrite(
+                    empFileName, frame[yCord:yCord + height + 1, xCord: xCord + width + 1])
             emptySpotCount += 1
-            # cv.rectangle(frame, pos, (xCord+width, yCord+height), (0,255,0), 2)
+                # cv.rectangle(frame, pos, (xCord+width, yCord+height), (0,255,0), 2)
 
 
 while True:

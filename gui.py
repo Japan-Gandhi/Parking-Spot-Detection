@@ -98,7 +98,7 @@ def checkSpotAvailability(imgFrame):
 
 def predictStatus(image):
 
-    modelLocation = "Parking-Spot-Detection\models\parkingSpotClassifier.h5"
+    modelLocation = "Parking-Spot-Detection\models\parkingSpotClassifier2.h5"
     model = load_model(modelLocation)
 
     # print(image.shape)
