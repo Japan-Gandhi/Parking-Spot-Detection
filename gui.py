@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 from PIL import ImageTk, Image
-
 import cv2 as cv
 import numpy as np
 import pandas as pd
@@ -22,7 +21,6 @@ width = 108
 with open("Parking-Spot-Detection/parkingSpotList.p", "rb") as file:
     positionList = pickle.load(file)
 
-positionList.reverse()
 # Importing the input video file
 cap = cv.VideoCapture(
     "Parking-Spot-Detection/Resources/Car Park Stablized Final Scam.mp4")
@@ -33,11 +31,9 @@ flag = 0
 
 def checkSpotAvailability(imgFrame):
 
-    progress = ttk.Progressbar(
-        root, orient="horizontal", mode="determinate", length=150)
-    progress.grid(row=1, column=1, pady=10)
+    # videoDisplay.grid(row=3, column=0, pady=10, columnspan=2)
+    # progress.configure(troughcolor='#E0E0E0', background='#00BFFF', troughrelief='flat', relief='flat')
     
-
     global ret, frame
 
     spotCounter = 0
@@ -52,23 +48,32 @@ def checkSpotAvailability(imgFrame):
 
         singleSpot = imgFrame[yCord:yCord+height+1, xCord: xCord+width+1]
         prediction = predictStatus(singleSpot)
+        print(spotCounter, prediction)
 
         if prediction > 0.5:
-            cv.rectangle(frame, pos, (xCord+width,
-                         yCord+height), (0, 0, 255), 2)
-            cv.putText(frame, str("Occupied"), (xCord+10, yCord+40),
-                       cv.FONT_HERSHEY_COMPLEX, 0.7, (255, 255, 0), 1)
+            # cv.rectangle(frame, pos, (xCord+width,
+            #              yCord+height), (0, 0, 255), 2)
+            # cv.putText(frame, str("Occupied"), (xCord+10, yCord+40),
+            #            cv.FONT_HERSHEY_COMPLEX, 0.7, (255, 255, 0), 1)
+            
+            # cv.putText(frame, predValue, (xCord+10, yCord+30),
+            #            cv.FONT_HERSHEY_COMPLEX, 0.7, (0,255,255), )
+            pass
 
         else:
             cv.rectangle(frame, pos, (xCord+width,
                          yCord+height), (0, 255, 0), 2)
-            cv.putText(frame, str("Empty"), (xCord+10, yCord+40),
-                       cv.FONT_HERSHEY_COMPLEX, 0.7, (255, 255, 0), 1)
+            spotNumber = str(spotCounter)
+            cv.putText(frame, spotNumber, (xCord+40, yCord+30),
+                       cv.FONT_HERSHEY_COMPLEX, 0.7, (0,255,255), 1)
+
+            
+            # cv.putText(frame, predValue, (xCord+10, yCord+30),
+            #            cv.FONT_HERSHEY_COMPLEX, 0.7, (0,255,255), 1)
             emptyCounter += 1
 
         progress["value"] += float((100/69))
         root.update_idletasks()
-        
 
         # if spotCounter == 12:
         #     break
@@ -76,33 +81,30 @@ def checkSpotAvailability(imgFrame):
     cv.putText(frame, "Free Spots: {}/{}".format(emptyCounter, spotCounter),
                (30, 30), cv.FONT_HERSHEY_COMPLEX, 1, (45, 25, 255), 2)
 
-    # resized_frame = cv.resize(imgFrame, (widthW, heightW))
     frame_rgb = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-
     img = Image.fromarray(frame_rgb)
     img_tk = ImageTk.PhotoImage(image=img)
 
-    video_label.configure(image=img_tk)
-    video_label.grid(column=0, row=2, columnspan=2)
-    
-    
-    video_label.image = img_tk
+    videoDisplay.configure(image=img_tk)
+    videoDisplay.grid(row=3, column=0, pady=10, columnspan=2)
+    videoDisplay.image = img_tk
 
     flag = 0
     root.update_idletasks()
-    time.sleep(3)
+    time.sleep(10)
+    progress["value"] =0
     updateFrame()
 
 
 def predictStatus(image):
 
-    modelLocation = "C:\D\College Stuff\Semester 4\Summer Internship\Parking-Spot-Detection\models\parkingSpotClassifier.h5"
+    modelLocation = "Parking-Spot-Detection\models\parkingSpotClassifier.h5"
     model = load_model(modelLocation)
 
     # print(image.shape)
 
     imageResize = tf.image.resize(image, (49, 109))
-    prediction = model.predict(np.expand_dims(imageResize/255, 0))
+    prediction = model(np.expand_dims(imageResize/255, 0))
     predictionValue = prediction[0][0]
 
     return predictionValue
@@ -112,7 +114,7 @@ def updateFrame():
 
     global ret, frame
     global flag
-    
+
     if cap.get(cv.CAP_PROP_POS_FRAMES,) == cap.get(cv.CAP_PROP_FRAME_COUNT):
         cap.set(cv.CAP_PROP_POS_FRAMES, 0)
 
@@ -127,11 +129,11 @@ def updateFrame():
             img = Image.fromarray(resized_frame)
             img_tk = ImageTk.PhotoImage(image=img)
 
-            video_label.configure(image=img_tk)
-            video_label.grid(column=0, row=2, columnspan=2)
-            video_label.image = img_tk
+            videoDisplay.configure(image=img_tk)
+            videoDisplay.grid(row=3, column=0, pady=10, columnspan=2)
+            videoDisplay.image = img_tk
 
-            root.after(30, updateFrame)
+            root.after(100, updateFrame)
 
 
 clrBeige = "#f5f5dc"
@@ -140,29 +142,40 @@ clrBeige = "#f5f5dc"
 # Beginning of the GUI
 root = tk.Tk()
 root.title("Gandhi-Nagpal Virtual Valet Pro")
-# root.geometry("1400x800")
 root.config(bg=clrBeige)
 
+
+# screen_width = root.winfo_screenwidth()
+# screen_height = root.winfo_screenheight()
+# root.geometry(f"{screen_width}x{screen_height}")
+
 # Heading
-heading = Label(root, text="Gandhi-Nagpal Virtual Valet")
-heading.grid(row=0, column=0, padx=20, pady=10, columnspan=2)
-heading.config(font=("Lexend Deca", 30), bg=clrBeige)
+heading = Label(root, text="GANDHI-NAGPAL VIRTUAL VALET")
+heading.grid(row=0, column=0, padx=20, columnspan=2)
+heading.config(font=("Lexend Deca", 30), bg=clrBeige, anchor="center")
 
-
-widthW = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
-heightW = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
-
-video_label = tk.Label(root)
-video_label.grid(row=2, column=0, pady=10)
 
 # Enter Car Button
 btn = Button(root, text="Car Enter",
              command=lambda: checkSpotAvailability(frame))
-btn.grid(column=0, row=1, padx=20, pady=10)
+btn.grid(column=0, row=1, padx=20, columnspan=2)
 btn.config(font=("Lexend Deca", 15))
+
+progress = ttk.Progressbar(
+    root, orient="horizontal", mode="determinate", length=250)
+progress.grid(row=2, column=0, pady=10, columnspan=2)
+
+
+
+# Video Display
+widthW = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
+heightW = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
+
+videoDisplay = tk.Label(root)
+# videoDisplay.grid(row=3, column=0, pady=10)
+
+
 
 
 updateFrame()
-
-
 root.mainloop()
