@@ -4,12 +4,12 @@ import pandas as pd
 import pickle
 
 # Saving Height and width
-height = 130
-width = 289
+height = 30
+width = 50
 
 # Checking the existance of list of parking spots in a pickle file.
 try:
-    with open("Parking-Spot-Detection/parkingSpotListCCET.p", "rb") as file:
+    with open("Parking-Spot-Detection/parkingSpotListVideo2.p", "rb") as file:
         positionList = pickle.load(file)
 
 except:
@@ -35,14 +35,14 @@ def mouseClickCallback(event, x, y, flags, param):
 
 while True:
 
-    image = cv.imread("Parking-Spot-Detection\Resources\input_image_CCET.png")
+    image = cv.imread("F:\CCET\SEM 4\Summer interniship\Parking-Spot-Detection\Resources\input_image_V2.png")
 
     # Manual Calculation of Height and Width
     # cv.rectangle(image, (50, 142), (158, 192), (0, 0, 255), 1)
 
     for position in positionList:
         cv.rectangle(image, position,
-                     (position[0]+width, position[1]+height), (0, 255, 0), 2)
+                     (position[0]+width, position[1]+height), (0, 255, 0), 1)
 
     cv.imshow("Input Image", image)
     cv.setMouseCallback("Input Image", mouseClickCallback)
@@ -51,7 +51,7 @@ while True:
         break
 
 
-with open("Parking-Spot-Detection/parkingSpotListCCET.p", "wb") as file:
+with open("Parking-Spot-Detection/parkingSpotListVideo2.p", "wb") as file:
     pickle.dump(positionList, file)
 
 

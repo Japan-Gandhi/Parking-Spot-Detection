@@ -15,14 +15,14 @@ occupiedSpotCount = 1
 skipCounter = 1
 
 # Directory Path for dataset
-dirPath = "C:\D\College Stuff\Semester 4\Summer Internship\Parking-Spot-Detection\Resources\dataset2"
+dirPath = "F:\CCET\SEM 4\Summer interniship\Parking-Spot-Detection\dataset4"
 
 
-with open("Parking-Spot-Detection/parkingSpotListCCET.p", "rb") as file:
+with open("Parking-Spot-Detection/parkingSpotListVideo2.p", "rb") as file:
     positionList = pickle.load(file)
 
 cap = cv.VideoCapture(
-    "Parking-Spot-Detection/Resources/02.mp4")
+    "F:\CCET\SEM 4\Summer interniship\Parking-Spot-Detection\Resources\Video 2 - Busy Parking Lot.mp4")
 
 
 def checkSpotAvailability(imgThreshhold):
