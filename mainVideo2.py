@@ -24,7 +24,7 @@ with open("Parking-Spot-Detection/parkingSpotListVideo2.p", "rb") as file:
 
 # Importing the input video file
 cap = cv.VideoCapture(
-    "Parking-Spot-Detection\Resources\Video 2 - Busy Parking Lot.mp4")
+    "Parking-Spot-Detection\Resources\Test Video 2.mp4")
 
 ret, frame = cap.read()
 flag = 0
@@ -55,7 +55,7 @@ def checkSpotAvailability(imgFrame):
         
         copy = frame
 
-        if prediction > 0.5:
+        if prediction > 0.75:
             # cv.rectangle(frame, pos, (xCord+width,
             #              yCord+height), (0, 0, 255), 2)
             # cv.putText(frame, str("Occupied"), (xCord+10, yCord+40),
