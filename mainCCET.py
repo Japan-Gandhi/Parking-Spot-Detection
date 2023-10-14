@@ -138,7 +138,7 @@ clrBeige = "#f5f5dc"
 
 # Beginning of the GUI
 root = tk.Tk()
-root.title("Gandhi-Nagpal Virtual Valet Pro")
+root.title("Gandhi-Nagpal Virtual Valet")
 root.config(bg=clrBeige)
 
 

@@ -96,7 +96,7 @@ def checkSpotAvailability(imgFrame):
 
 def predictStatus(image):
 
-    modelLocation = "Parking-Spot-Detection\models\parkingSpotClassifierV3.h5"
+    modelLocation = "Parking-Spot-Detection\models\parkingSpotClassifierV4.h5"
     model = load_model(modelLocation)
 
     # print(image.shape)
@@ -171,9 +171,6 @@ heightW = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
 
 videoDisplay = tk.Label(root)
 # videoDisplay.grid(row=3, column=0, pady=10)
-
-
-
 
 updateFrame()
 root.mainloop()

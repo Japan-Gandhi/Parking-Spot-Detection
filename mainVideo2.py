@@ -17,6 +17,9 @@ import time
 height = 30
 width = 50
 
+modelLocation = "Parking-Spot-Detection\models\parkingSpotClassifierV6.hdf5"
+model = load_model(modelLocation, compile=False)
+model.compile(loss="binary_crossentropy", metrics=["accuracy"])
 
 # Loading the spot list from the pickle file
 with open("Parking-Spot-Detection/parkingSpotListVideo2.p", "rb") as file:
@@ -34,13 +37,13 @@ def checkSpotAvailability(imgFrame):
 
     # videoDisplay.grid(row=3, column=0, pady=10, columnspan=2)
     # progress.configure(troughcolor='#E0E0E0', background='#00BFFF', troughrelief='flat', relief='flat')
-    
+
     global ret, frame
 
     spotCounter = 0
     emptyCounter = 0
     global flag
-    
+
     posListLength = len(positionList)
 
     flag = 1
@@ -52,7 +55,7 @@ def checkSpotAvailability(imgFrame):
         singleSpot = imgFrame[yCord:yCord+height+1, xCord: xCord+width+1]
         prediction = predictStatus(singleSpot)
         print(spotCounter, prediction)
-        
+
         copy = frame
 
         if prediction > 0.75:
@@ -67,7 +70,7 @@ def checkSpotAvailability(imgFrame):
             #              yCord+height), (0, 255, 0), 1)
             spotNumber = str(spotCounter)
             cv.putText(copy, spotNumber, (xCord+10, yCord+20),
-                       cv.FONT_HERSHEY_COMPLEX, 0.7, (0,255,255), 1)
+                       cv.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 255), 1)
 
             emptyCounter += 1
 
@@ -91,14 +94,13 @@ def checkSpotAvailability(imgFrame):
     flag = 0
     root.update_idletasks()
     time.sleep(10)
-    progress["value"] =0
+    progress["value"] = 0
     updateFrame()
 
 
 def predictStatus(image):
 
-    modelLocation = "Parking-Spot-Detection\models\parkingSpotClassifierV3.h5"
-    model = load_model(modelLocation)
+    global model
 
     # print(image.shape)
 
@@ -165,15 +167,12 @@ progress = ttk.Progressbar(
 progress.grid(row=2, column=0, pady=10, columnspan=2)
 
 
-
 # Video Display
 widthW = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
 heightW = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
 
 videoDisplay = tk.Label(root)
 # videoDisplay.grid(row=3, column=0, pady=10)
-
-
 
 
 updateFrame()

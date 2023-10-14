@@ -17,6 +17,11 @@ import time
 height = 50
 width = 120
 
+# Loading the
+modelLocation = "Parking-Spot-Detection\models\parkingSpotClassifierV5.hdf5"
+model = load_model(modelLocation, compile=False)
+model.compile(loss="binary_crossentropy", metrics=["accuracy"])
+
 # Loading the spot list from the pickle file
 with open("Parking-Spot-Detection/parkingSpotListVideoTest3.p", "rb") as file:
     positionList = pickle.load(file)
@@ -99,9 +104,7 @@ def checkSpotAvailability(imgFrame):
 
 
 def predictStatus(image):
-
-    modelLocation = "Parking-Spot-Detection\models\parkingSpotClassifierV3.h5"
-    model = load_model(modelLocation)
+    global model
 
     # print(image.shape)
 
@@ -135,7 +138,7 @@ def updateFrame():
             videoDisplay.grid(row=3, column=0, pady=10, padx=10, columnspan=2)
             videoDisplay.image = img_tk
 
-            root.after(100, updateFrame)
+            root.after(10, updateFrame)
 
 
 clrBeige = "#f5f5dc"
